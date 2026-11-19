@@ -168,7 +168,7 @@ public class WebBrowserFragment extends MainActivityFragment
 				v.loadUrl(url);
 			}
 		} else {
-			WebBrowserAddon addon = AddonManager.get().getAddon(WebBrowserAddon.class);
+			WebBrowserAddon addon = getAddon();
 			if (addon != null) addon.setLastUrl(url);
 		}
 	}

@@ -98,7 +98,7 @@ public class WebBrowserAddon implements FermataFragmentAddon, SharedPreferenceSt
 		if (getClass() == WebBrowserAddon.class) {
 			set.addBooleanPref(o -> {
 				o.store = getPreferenceStore();
-				o.pref = WEB_OPEN_ON_START;
+				o.pref = getOpenOnStartPref();
 				o.title = R.string.open_on_start;
 				o.visibility = visibility;
 			});
@@ -128,19 +128,19 @@ public class WebBrowserAddon implements FermataFragmentAddon, SharedPreferenceSt
 		if (prefs.contains(getInfo().enabledPref)) {
 			if (!store.getBooleanPref(getInfo().enabledPref)) {
 				MainActivityPrefs ap = MainActivityPrefs.get();
-				getPreferenceStore().applyBooleanPref(WEB_OPEN_ON_START, false);
+				getPreferenceStore().applyBooleanPref(getOpenOnStartPref(), false);
 				if (getInfo().className.equals(ap.getShowAddonOnStartPref()))
 					ap.setShowAddonOnStartPref(null);
 			}
-		} else if (prefs.contains(WEB_OPEN_ON_START)) {
+		} else if (prefs.contains(getOpenOnStartPref())) {
 			MainActivityPrefs ap = MainActivityPrefs.get();
-			if (store.getBooleanPref(WEB_OPEN_ON_START)) {
+			if (store.getBooleanPref(getOpenOnStartPref())) {
 				ap.setShowAddonOnStartPref(getInfo().className);
 			} else if (getInfo().className.equals(ap.getShowAddonOnStartPref())) {
 				ap.setShowAddonOnStartPref(null);
 			}
 		} else if (prefs.contains(MainActivityPrefs.SHOW_ADDON_ON_START)) {
-			getPreferenceStore().applyBooleanPref(WEB_OPEN_ON_START,
+			getPreferenceStore().applyBooleanPref(getOpenOnStartPref(),
 					getInfo().className.equals(MainActivityPrefs.get().getShowAddonOnStartPref()));
 		}
 		ignorePrefChange = false;
@@ -164,6 +164,14 @@ public class WebBrowserAddon implements FermataFragmentAddon, SharedPreferenceSt
 
 	public Pref<IntSupplier> getForceDarkPref() {
 		return DARK_MODE;
+	}
+
+	public Pref<BooleanSupplier> getOpenOnStartPref() {
+		return WEB_OPEN_ON_START;
+	}
+
+	public Pref<Supplier<String>> getLastUrlPref() {
+		return LAST_URL;
 	}
 
 	public Pref<Supplier<String>> getUserAgentPref() {
@@ -211,7 +219,7 @@ public class WebBrowserAddon implements FermataFragmentAddon, SharedPreferenceSt
 	}
 
 	public void setDesktopVersion(boolean v) {
-		getPreferenceStore().applyBooleanPref(DESKTOP_VERSION, v);
+		getPreferenceStore().applyBooleanPref(getDesktopVersionPref(), v);
 	}
 
 	Map<String, String> getBookmarks() {
@@ -258,10 +266,10 @@ public class WebBrowserAddon implements FermataFragmentAddon, SharedPreferenceSt
 	}
 
 	String getLastUrl() {
-		return getPreferenceStore().getStringPref(LAST_URL);
+		return getPreferenceStore().getStringPref(getLastUrlPref());
 	}
 
 	void setLastUrl(String url) {
-		getPreferenceStore().applyStringPref(LAST_URL, url);
+		getPreferenceStore().applyStringPref(getLastUrlPref(), url);
 	}
 }

@@ -69,6 +69,11 @@ public class NavBarMediator extends PrefNavBarMediator
 			Pref.sa("NAV_BAR_ITEMS_L", (String[]) null);
 	private static final Pref<Supplier<String[]>> PREF_R =
 			Pref.sa("NAV_BAR_ITEMS_R", (String[]) null);
+	private static final String[] CAR_FIRST_ADDONS = {
+			"me.aap.fermata.addon.web.yt.YoutubeAddon",
+			"me.aap.fermata.addon.web.StremioAddon",
+			"me.aap.fermata.addon.tv.TvAddon"
+	};
 
 	@Override
 	protected Collection<NavBarItem> getItems(NavBarView nb) {
@@ -321,6 +326,14 @@ public class NavBarMediator extends PrefNavBarMediator
 		Set<String> names = newLinkedHashSet(BuildConfig.ADDONS.length + 4);
 		String[] pref = getPreferenceStore(nb).getStringArrayPref(getPref(nb));
 		CollectionUtils.addAll(names, pref);
+
+		if (((pref == null) || (pref.length == 0)) && MainActivityDelegate.get(nb.getContext()).isCarActivity()) {
+			// In the car, the streaming tabs come first, unless the user has reordered the items
+			for (String cn : CAR_FIRST_ADDONS) {
+				if (amgr.getAddon(cn) instanceof FermataFragmentAddon) names.add(cn);
+			}
+		}
+
 		names.add("folders");
 		names.add("favorites");
 		names.add("playlists");

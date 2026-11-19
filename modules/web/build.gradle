@@ -15,10 +15,16 @@ ext {
                     order: 2
             ],
             [
+                    name : 'stremio',
+                    icon : 'stremio',
+                    class: 'me.aap.fermata.addon.web.StremioAddon',
+                    order: 3
+            ],
+            [
                     name : 'web_browser',
                     icon : 'web',
                     class: 'me.aap.fermata.addon.web.WebBrowserAddon',
-                    order: 3
+                    order: 4
             ]
     ]
 }
