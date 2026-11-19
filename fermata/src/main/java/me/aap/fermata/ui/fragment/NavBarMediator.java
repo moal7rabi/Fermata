@@ -85,6 +85,10 @@ public class NavBarMediator extends PrefNavBarMediator
 
 		for (String name : names) {
 			switch (name) {
+				case "home":
+					items.add(create(ctx, R.id.home_fragment, R.drawable.home, R.string.nav_home,
+							items.size() < max));
+					continue;
 				case "folders":
 					items.add(
 							create(ctx, R.id.folders_fragment, me.aap.utils.R.drawable.folder, R.string.folders,
@@ -327,10 +331,13 @@ public class NavBarMediator extends PrefNavBarMediator
 		String[] pref = getPreferenceStore(nb).getStringArrayPref(getPref(nb));
 		CollectionUtils.addAll(names, pref);
 
-		if (((pref == null) || (pref.length == 0)) && MainActivityDelegate.get(nb.getContext()).isCarActivity()) {
-			// In the car, the streaming tabs come first, unless the user has reordered the items
-			for (String cn : CAR_FIRST_ADDONS) {
-				if (amgr.getAddon(cn) instanceof FermataFragmentAddon) names.add(cn);
+		if (MainActivityDelegate.get(nb.getContext()).isCarActivity()) {
+			// MOCar: in the car, Home and the streaming tabs come first, unless the user has reordered
+			names.add("home");
+			if ((pref == null) || (pref.length == 0)) {
+				for (String cn : CAR_FIRST_ADDONS) {
+					if (amgr.getAddon(cn) instanceof FermataFragmentAddon) names.add(cn);
+				}
 			}
 		}
 
@@ -346,7 +353,8 @@ public class NavBarMediator extends PrefNavBarMediator
 	}
 
 	private static String idToName(@IdRes int id) {
-		if (id == R.id.folders_fragment) return "folders";
+		if (id == R.id.home_fragment) return "home";
+		else if (id == R.id.folders_fragment) return "folders";
 		else if (id == R.id.favorites_fragment) return "favorites";
 		else if (id == R.id.playlists_fragment) return "playlists";
 		else if (id == R.id.menu) return "menu";
