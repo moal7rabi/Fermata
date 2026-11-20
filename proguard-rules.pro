@@ -14,3 +14,6 @@
 
 -keepnames class androidx.media3.exoplayer.ExoPlayerImpl { *; }
 -keepnames class androidx.media3.exoplayer.ExoPlayerImplInternal { *; }
+
+# MOCar: Shizuku.newProcess is called by reflection (ApkInstallActivity)
+-keep class rikka.shizuku.Shizuku { *; }
