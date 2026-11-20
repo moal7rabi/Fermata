@@ -1,8 +1,10 @@
 package me.aap.fermata.auto;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -112,9 +114,17 @@ public class ApkInstallActivity extends Activity {
 	}
 
 	private void installWithShizuku(Uri u) {
-		String[] cmd = {"am", "start", "-a", "android.intent.action.INSTALL_PACKAGE", "-d",
-				u.toString(), "-t", APK_MIME, "--ez", "android.intent.extra.NOT_UNKNOWN_SOURCE", "true",
-				"--es", "android.intent.extra.INSTALLER_PACKAGE_NAME", PLAY_STORE, "-f", "0x10000000"};
+		var list = new java.util.ArrayList<>(java.util.Arrays.asList("am", "start", "-a",
+				"android.intent.action.INSTALL_PACKAGE", "-d", u.toString(), "-t", APK_MIME, "--ez",
+				"android.intent.extra.NOT_UNKNOWN_SOURCE", "true", "--es",
+				"android.intent.extra.INSTALLER_PACKAGE_NAME", PLAY_STORE, "-f", "0x10000000"));
+		// The system installer, not other apps, handling installations (e.g. KingInstaller)
+		ComponentName c = getSystemInstaller(u);
+		if (c != null) {
+			list.add("-n");
+			list.add(c.flattenToString());
+		}
+		String[] cmd = list.toArray(new String[0]);
 
 		new Thread(() -> {
 			try {
@@ -150,6 +160,8 @@ public class ApkInstallActivity extends Activity {
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		i.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
 		i.putExtra(Intent.EXTRA_INSTALLER_PACKAGE_NAME, PLAY_STORE);
+		ComponentName c = getSystemInstaller(u);
+		if (c != null) i.setComponent(c);
 
 		try {
 			startActivity(i);
@@ -183,6 +195,24 @@ public class ApkInstallActivity extends Activity {
 			} catch (Exception ignore) {
 			}
 		}
+	}
+
+	private ComponentName getSystemInstaller(Uri u) {
+		@SuppressWarnings("deprecation")
+		Intent probe = new Intent(Intent.ACTION_INSTALL_PACKAGE).setDataAndType(u, APK_MIME);
+
+		try {
+			for (ResolveInfo ri : getPackageManager().queryIntentActivities(probe, 0)) {
+				var ai = ri.activityInfo;
+				if ((ai.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+					return new ComponentName(ai.packageName, ai.name);
+				}
+			}
+		} catch (Exception err) {
+			Log.d(err, "Failed to find the system installer");
+		}
+
+		return null;
 	}
 
 	private static boolean isShizukuRunning() {
