@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <automotiveApp xmlns:tools="http://schemas.android.com/tools">
     <uses name="media" />
-<!--    <uses name="template" />-->
+    <!-- MOCar: needed for MOCar Fullscreen (a template/navigation app). Upstream disabled it,
+         since AA 17.3 it may conflict with the media service. -->
+    <uses name="template" />
     <uses
         name="service"
         tools:ignore="InvalidUsesTagAttribute" />
