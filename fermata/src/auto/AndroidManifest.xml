@@ -98,6 +98,26 @@
         </service>
 
         <activity
+            android:name="me.aap.fermata.auto.ApkInstallActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/install_with_mocar"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/vnd.android.package-archive" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/vnd.android.package-archive" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="me.aap.fermata.auto.ProjectionActivity"
             android:excludeFromRecents="true"
             android:exported="true"

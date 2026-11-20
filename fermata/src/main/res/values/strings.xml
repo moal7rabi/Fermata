@@ -30,6 +30,7 @@
     <string name="addon_name_youtube" translatable="false">Youtube</string>
     <string name="addon_name_stremio" translatable="false">Stremio</string>
     <string name="home_title" translatable="false">MOCar</string>
+    <string name="install_with_mocar" translatable="false">Install with MOCar</string>
     <string name="nav_home">Home</string>
     <string name="home_youtube" translatable="false">YouTube</string>
     <string name="home_stremio" translatable="false">Stremio</string>

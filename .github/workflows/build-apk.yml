@@ -92,6 +92,19 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Create MOCar keystore
+        # MOCar: a permanent key, so new builds install as updates. Optional - without the secret
+        # the build is signed with a new temporary key.
+        run: |
+          [ -z "${{ secrets.MOCAR_KEYSTORE }}" ] && exit 0
+          echo "${{ secrets.MOCAR_KEYSTORE }}" | base64 -d > keystore.jks
+          cat > local.properties <<EOF
+          storeFile=$(pwd)/keystore.jks
+          keyAlias=mocar
+          keyPassword=mocar-signing
+          storePassword=mocar-signing
+          EOF
+
       - name: Create keystore and local.properties
         run: |
           [ -z "${{ secrets.CI_KEYSTORE }}" ] && exit 0
